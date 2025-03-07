@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 from aiogram.client.session.aiohttp import AiohttpSession
 from deep_translator import GoogleTranslator
 
+from keyboards import main_keyboard, inline_keyboard
+
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
@@ -168,7 +170,7 @@ async def help(message: Message):
 
 @dp.message(CommandStart())
 async def start(message: Message):
-    await message.answer(f"Привет, {message.from_user.full_name}! Я бот!")
+    await message.answer(f"Привет, {message.from_user.full_name}! Я бот!", reply_markup=inline_keyboard)
 
 
 # Обработчик текстовых сообщений
