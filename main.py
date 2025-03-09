@@ -3,7 +3,7 @@ import random
 import requests
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, FSInputFile
+from aiogram.types import Message, FSInputFile, CallbackQuery
 import os
 import logging
 from gtts import gTTS
@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from aiogram.client.session.aiohttp import AiohttpSession
 from deep_translator import GoogleTranslator
 
-from keyboards import main_keyboard, inline_keyboard
+import keyboards as kb
 
 load_dotenv()
 
@@ -168,9 +168,31 @@ async def help(message: Message):
     )
 
 
+@dp.callback_query(F.data == "catalog")
+async def callback_catalog(callback: CallbackQuery):
+    await callback.answer("Каталог загружается...", show_alert=True)
+    await callback.message.edit_text("Вот актуальный каталог!", reply_markup=await kb.test_keyboard())
+
+
+@dp.callback_query(F.data == "news")
+async def callback_news(callback: CallbackQuery):
+    await callback.answer("Новости загружаются...")
+    await callback.message.answer("Вот свежие новости!")
+
+
+@dp.callback_query(F.data == "person")
+async def callback_person(callback: CallbackQuery):
+    await callback.answer("Профиль загружается...")
+    await callback.message.answer("Вот ваш профиль!")
+
+
+@dp.message(F.text == "Тестовая кнопка 1")
+async def test_button(message: Message):
+    await message.answer("Обработка нажатия на reply-кнопку")
+
 @dp.message(CommandStart())
 async def start(message: Message):
-    await message.answer(f"Привет, {message.from_user.full_name}! Я бот!", reply_markup=inline_keyboard)
+    await message.answer(f"Привет, {message.from_user.full_name}! Я бот!", reply_markup=kb.inline_keyboard)
 
 
 # Обработчик текстовых сообщений
